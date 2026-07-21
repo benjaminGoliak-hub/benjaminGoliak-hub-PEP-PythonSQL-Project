@@ -89,6 +89,9 @@ def write_csv_generic(file_path, statement, header):
             statement_results = cursor.execute(statement).fetchall()
             print(f"SQL statement executed! Got {len(statement_results)} hits")
 
+            # Cast all inner elements as strings
+            statement_results = [[str(y) for y in x] for x in statement_results]
+
             # join each element in a line with ',' via list comprehension
             statement_results = [','.join(x) for x in statement_results]
 
@@ -144,8 +147,15 @@ def write_user_analytics(csv_file_path):
 # This function will write the callLogs ordered by userId, then start time.
 # Then, write the ordered callLogs to orderedCalls.csv
 def write_ordered_calls(csv_file_path):
-
-    print("TODO: write_ordered_calls")
+    print("Function write_ordered_calls called")
+    
+    # Select from callLogs but order it 
+    sql_statement = """
+    SELECT * FROM callLogs
+    ORDER BY userID ASC, startTime ASC
+    """
+    header = "callId,phoneNumber,startTime,endTime,direction,userId"
+    write_csv_generic(csv_file_path, sql_statement, header)
 
 
 
