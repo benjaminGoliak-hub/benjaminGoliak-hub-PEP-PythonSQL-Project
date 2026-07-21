@@ -53,8 +53,8 @@ def insert_csv_generic(file_path, statement):
 
         # Calculate the number of entries for a line 
         # Assumes the correct number of columns are in the header
-        fields = len(file_lines[0].split(','))
-        print(f"{feilds} found in csv header")
+        field_count = len(file_lines[0].split(','))
+        print(f"{field_count} fields found in csv header")
 
         # Loop through all lines in the file except the headder line
         for line in file_lines[1:]:
@@ -62,9 +62,18 @@ def insert_csv_generic(file_path, statement):
             line = [x.strip() for x in line.split(',')]
             print(f"Line to filter: {line}")
 
+            # Skip if line has wrong field count
+            if len(line) != field_count:
+                print("Line Skipped! Wrong field count")
+                continue
 
+            # Skip if line has a whitespace entry (has been trimmed to '' at this point)
+            if '' in line:
+                print("Line Skipped! Whitespace entry")
+                continue
 
-
+            # Insert with provided statement
+            cursor.execute(statement, line)
 
 # TODO: Implement the following 4 functions. The functions must pass the unit tests to complete the project.
 
@@ -75,7 +84,6 @@ def load_and_clean_users(file_path):
     sql_statement = """
     INSERT INTO users (firstName, lastName) VALUES (?, ?)
     """
-
     insert_csv_generic(file_path, sql_statement)
 
 
