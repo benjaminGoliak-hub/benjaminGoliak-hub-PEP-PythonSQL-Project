@@ -77,12 +77,29 @@ def insert_csv_generic(file_path, statement):
 
 def write_csv_generic(file_path, statement, header):
     with open(file_path, "w") as usr_file:
+        print(f"File {file_path} opened to write")
+
         # Write the header cleanly
         usr_file.write(header.strip() + '\n')
+        print(f"Header: {header} added to CSV")
 
         # Run the sql statement and get the results
-        statement_results = cursor.execute(statement).fetchall()
-        print(statement_results)
+        try:
+            # get the results for the querry
+            statement_results = cursor.execute(statement).fetchall()
+            print(f"SQL statement executed! Got {len(statement_results)} hits")
+
+            # join each element in a line with ',' via list comprehension
+            statement_results = [','.join(x) for x in statement_results]
+
+            # join each line string with a newline
+            statement_results = '\n'.join(statement_results)
+
+            # write to file
+            usr_file.write(statement_results)
+            print("File written")
+        except Exception as e:
+            print(f"Caught Error: {e}")
 
 
 
@@ -113,13 +130,15 @@ def load_and_clean_call_logs(file_path):
 # You must save records consisting of each userId, avgDuration, and numCalls
 # example: 1,105.0,4 - where 1 is the userId, 105.0 is the avgDuration, and 4 is the numCalls.
 def write_user_analytics(csv_file_path):
+    print("Function write_user_analytics called")
+    
+    # Select userID and avg of end-start group it by users
     sql_statement = """
-    SELECT users.userId, AVG(startTime) - AVG(endTime), COUNT(*) FROM users
-    INNER JOIN callLogs ON users.userID=callLogs.userID
-    GROUP BY users.userID
+    SELECT userId, (AVG(endTime) - AVG(startTime)), COUNT(*) FROM callLogs
+    GROUP BY userId
     """
     header = "userId,avgDuration,numCalls"
-    write_csv_generic(csv_file_path, sql_statement,header)
+    write_csv_generic(csv_file_path, sql_statement, header)
 
 
 # This function will write the callLogs ordered by userId, then start time.
