@@ -89,6 +89,13 @@ def load_and_clean_users(file_path):
 
 # This function will load the callLogs.csv file into the callLogs table, discarding any records with incomplete data
 def load_and_clean_call_logs(file_path):
+    print("Function load_and_clean_call_logs called!")
+
+    sql_statement = """
+    INSERT INTO callLogs (phoneNumber, startTime, endTime, direction, userId) 
+        VALUES (?, ?, ?, ?, ?)
+    """
+    insert_csv_generic(file_path, sql_statement)
 
     print("TODO: load_call_logs")
 
