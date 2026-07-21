@@ -45,7 +45,7 @@ def main():
 
 # Helper to reuse the logic for filtering and inserting
 def insert_csv_generic(file_path, statement):
-    with open(file_path, "r") as usr_file:
+    with open(file_path, "r") as user_file:
         print(f"File: {file_path} opened for reading")
         
         # Read the file lines
