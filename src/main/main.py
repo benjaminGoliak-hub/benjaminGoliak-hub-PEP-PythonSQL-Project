@@ -14,7 +14,7 @@ def main():
 
     # users table
     cursor.execute('''CREATE TABLE IF NOT EXISTS users (
-                        userId INTEGER PRIMARY KEY,
+                        userId INTEGER PRIMARY KEY AUTOINCREMENT,
                         firstName TEXT,
                         lastName TEXT
                       )'''
@@ -22,7 +22,7 @@ def main():
 
     # callLogs table (with FK to users table)
     cursor.execute('''CREATE TABLE IF NOT EXISTS callLogs (
-        callId INTEGER PRIMARY KEY,
+        callId INTEGER PRIMARY KEY AUTOINCREMENT,
         phoneNumber TEXT,
         startTime INTEGER,
         endTime INTEGER,
