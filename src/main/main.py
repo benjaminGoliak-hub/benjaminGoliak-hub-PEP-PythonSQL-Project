@@ -1,5 +1,6 @@
 import csv
 import sqlite3
+import logging # Trying out Logging for a debugging info like we learned
 
 # Connect to the SQLite in-memory database
 conn = sqlite3.connect(':memory:')
@@ -48,6 +49,11 @@ def main():
 
 # This function will load the users.csv file into the users table, discarding any records with incomplete data
 def load_and_clean_users(file_path):
+    logging.info("function load_and_clean_users called!")
+    with open(file_path, "r") as user_csv:
+        logging.info(f"file: {file_path} opened for reading")
+        
+
 
     print("TODO: load_users")
 
