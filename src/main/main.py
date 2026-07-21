@@ -8,8 +8,9 @@ conn = sqlite3.connect(':memory:')
 # A cursor object to execute SQL commands
 cursor = conn.cursor()
 
-
 def main():
+    # Set logging level
+    logging.basicConfig(level=logging.DEBUG, stream=logging)
 
     # users table
     cursor.execute('''CREATE TABLE IF NOT EXISTS users (
