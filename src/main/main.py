@@ -1,6 +1,5 @@
 import csv
 import sqlite3
-import logging # Trying out Logging for a debugging info like we learned
 
 # Connect to the SQLite in-memory database
 conn = sqlite3.connect(':memory:')
@@ -44,19 +43,40 @@ def main():
     cursor.close()
     conn.close()
 
+# Helper to reuse the logic for filtering and inserting
+def insert_csv_generic(file_path, statement):
+    with open(file_path, "r") as user_csv:
+        print(f"File: {file_path} opened for reading")
+        
+        # Read the file lines
+        file_lines = user_csv.readlines()
+
+        # Calculate the number of entries for a line 
+        # Assumes the correct number of columns are in the header
+        fields = len(file_lines[0].split(','))
+        print(f"{feilds} found in csv header")
+
+        # Loop through all lines in the file except the headder line
+        for line in file_lines[1:]:
+            # Trim the line members using list comprehension
+            line = [x.strip() for x in line.split(',')]
+            print(f"Line to filter: {line}")
+
+
+
+
 
 # TODO: Implement the following 4 functions. The functions must pass the unit tests to complete the project.
 
-
 # This function will load the users.csv file into the users table, discarding any records with incomplete data
 def load_and_clean_users(file_path):
-    logging.info("function load_and_clean_users called!")
-    with open(file_path, "r") as user_csv:
-        logging.info(f"file: {file_path} opened for reading")
-        
+    print("Function load_and_clean_users called!")
 
+    sql_statement = """
+    INSERT INTO users (firstName, lastName) VALUES (?, ?)
+    """
 
-    print("TODO: load_users")
+    insert_csv_generic(file_path, sql_statement)
 
 
 # This function will load the callLogs.csv file into the callLogs table, discarding any records with incomplete data
