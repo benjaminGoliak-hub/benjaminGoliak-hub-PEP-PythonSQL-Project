@@ -45,11 +45,11 @@ def main():
 
 # Helper to reuse the logic for filtering and inserting
 def insert_csv_generic(file_path, statement):
-    with open(file_path, "r") as user_csv:
+    with open(file_path, "r") as usr_file:
         print(f"File: {file_path} opened for reading")
         
         # Read the file lines
-        file_lines = user_csv.readlines()
+        file_lines = user_file.readlines()
 
         # Calculate the number of entries for a line 
         # Assumes the correct number of columns are in the header
@@ -75,6 +75,17 @@ def insert_csv_generic(file_path, statement):
             # Insert with provided statement
             cursor.execute(statement, line)
 
+def write_csv_generic(file_path, statement, header):
+    with open(file_path, "w") as usr_file:
+        # Write the header cleanly
+        usr_file.write(header.strip() + '\n')
+
+        # Run the sql statement and get the results
+        statement_results = cursor.execute(statement).fetchall()
+        print(statement_results)
+
+
+
 # TODO: Implement the following 4 functions. The functions must pass the unit tests to complete the project.
 
 # This function will load the users.csv file into the users table, discarding any records with incomplete data
@@ -97,15 +108,18 @@ def load_and_clean_call_logs(file_path):
     """
     insert_csv_generic(file_path, sql_statement)
 
-    print("TODO: load_call_logs")
-
 
 # This function will write analytics data to testUserAnalytics.csv - average call time, and number of calls per user.
 # You must save records consisting of each userId, avgDuration, and numCalls
 # example: 1,105.0,4 - where 1 is the userId, 105.0 is the avgDuration, and 4 is the numCalls.
 def write_user_analytics(csv_file_path):
-
-    print("TODO: write_user_analytics")
+    sql_statement = """
+    SELECT users.userId, AVG(startTime) - AVG(endTime), COUNT(*) FROM users
+    INNER JOIN callLogs ON users.userID=callLogs.userID
+    GROUP BY users.userID
+    """
+    header = "userId,avgDuration,numCalls"
+    write_csv_generic(csv_file_path, sql_statement,header)
 
 
 # This function will write the callLogs ordered by userId, then start time.
